@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+{% block title %}Tic Tac Toe: Home{% endblock %}
+
+{% block body %}
+<header>
+    <h1>Tic Tac Toe: Home</h1>
+    <br>
+</header>
+<style>
+    body {
+        background-color: #121212;
+        color: white;
+        font-family: Arial, sans-serif;
+    }
+
+    main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 80vh;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+        max-width: 300px;
+    }
+
+    input, select {
+        padding: 10px;
+        font-size: 16px;
+        border: 2px solid #17B381;
+        border-radius: 4px;
+        background-color: #1e1e1e;
+        color: white;
+    }
+
+    input::placeholder {
+        color: #888;
+    }
+
+    .styled-button {
+        background-color: #E8F3F8;
+        color: #17B381;
+        border: 2px solid #17B381;
+        border-radius: 4px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .styled-button:hover {
+        background-color: #17B381;
+        color: #E8F3F8;
+        border-color: #E8F3F8;
+    }
+</style>
+<main class="background">
+    <form action="/" method="post">
+        <input type="text" name="username" placeholder="Username" autocomplete="off" autofocus>
+        <select name="difficulty">
+            <option disabled selected>Difficulty</option>
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+        </select>
+        <button class="styled-button" type="submit">Start Game</button>
+    </form>
+</main>

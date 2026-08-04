@@ -1,0 +1,176 @@
+{% extends "layout.html" %} {% block title %}Tic Tac Toe: Hard Mode{% endblock
+%} {% block body %}
+<style>
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: black;
+    gap: 20px;
+  }
+
+  .background {
+    margin: 0 auto;
+    font-family: Itim;
+    display: grid;
+    grid-template-columns: 100px 100px 100px;
+    grid-template-rows: 100px 100px 100px;
+    max-width: 300px;
+    max-height: 300px;
+    cursor: pointer;
+  }
+
+  header,
+  footer {
+    background-color: black;
+    color: white;
+  }
+
+  .square {
+    border: 2px solid white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 48px;
+    font-family: Itim;
+    color: white;
+  }
+
+  #reset {
+    align-items: center;
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    display: block;
+    margin: 20px auto;
+  }
+
+  #record {
+    color: white;
+    align-items: end;
+    margin-left: 10px auto;
+    text-align: center;
+  }
+</style>
+<div class="background">
+  <div class="square" id="0"></div>
+  <div class="square" id="1"></div>
+  <div class="square" id="2"></div>
+  <div class="square" id="3"></div>
+  <div class="square" id="4"></div>
+  <div class="square" id="5"></div>
+  <div class="square" id="6"></div>
+  <div class="square" id="7"></div>
+  <div class="square" id="8"></div>
+</div>
+<button id="reset">Reset</button>
+<h3 id="record"></h3>
+<script>
+  board = ["", "", "", "", "", "", "", "", ""];
+  gameOver = false;
+  const winningCombinations = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+
+  function checkWin(thisBoard) {
+    for (let combination of winningCombinations) {
+      if (
+        thisBoard[combination[0]] == thisBoard[combination[1]] &&
+        thisBoard[combination[2]] == thisBoard[combination[0]] &&
+        thisBoard[combination[0]] !== ""
+      ) {
+        if (thisBoard[combination[0]] === "X") {
+          return "X";
+        } else {
+          return "O";
+        }
+      }
+    }
+  }
+
+  function checkDraw(thisBoard) {
+    return thisBoard.every((square) => square !== "");
+  }
+
+  function minimax(board, isMaximizing) {
+    if (checkWin(board) == "O") return 10;
+    if (checkWin(board) == "X") return -10;
+    if (checkDraw(board)) return 0;
+    if (isMaximizing == true) {
+      let bestScore = -Infinity;
+      let newBoard = [...board];
+      for (let i = 0; i < newBoard.length; i++) {
+        if (newBoard[i] == "") {
+          newBoard[i] = "O";
+          score = minimax(newBoard, false);
+          newBoard[i] = "";
+          bestScore = Math.max(bestScore, score);
+        }
+      }
+      return bestScore;
+    } else {
+      let bestScore = Infinity;
+      let newBoard = [...board];
+      for (let i = 0; i < newBoard.length; i++) {
+        if (newBoard[i] == "") {
+          newBoard[i] = "X";
+          score = minimax(newBoard, true);
+          newBoard[i] = "";
+          bestScore = Math.min(bestScore, score);
+        }
+      }
+      return bestScore;
+    }
+  }
+
+  function aiMove() {
+    let move;
+    let bestScore = -Infinity;
+    for (let i = 0; i < board.length; i++) {
+      if (board[i] == "") {
+        board[i] = "O";
+        let score = minimax(board, false);
+        board[i] = "";
+        if (score > bestScore) {
+          bestScore = score;
+          move = i;
+        }
+      }
+    }
+    board[move] = "O";
+    document.getElementById(move).textContent = "O";
+  }
+  tiles = document.querySelectorAll(".square");
+  for (let tile of tiles) {
+    tile.addEventListener("click", function (event) {
+      if (gameOver) return;
+      let index = parseInt(event.target.id);
+      if (board[index] !== "") {
+        alert("This square is already taken. Choose another one.");
+      } else {
+        board[index] = "X";
+        tile.textContent = "X";
+        if (checkWin(board)) return;
+        if (checkDraw(board)) return;
+        aiMove();
+        if (checkWin(board)) return;
+        if (checkDraw(board)) return;
+      }
+    });
+  }
+  document.getElementById("reset").addEventListener("click", function () {
+    board = ["", "", "", "", "", "", "", "", ""];
+    for (let tile of tiles) {
+      tile.textContent = "";
+    }
+  });
+</script>
+{% endblock %}
